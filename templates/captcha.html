@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>보안 코드 챌린지</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap">
+  <style>
+    body {
+      font-family: 'Nanum Gothic', sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      color: #333;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 32px;
+      color: #2e86de;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 16px;
+      color: #555;
+    }
+
+    #captcha-container {
+      width: 300px;
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      font-weight: bold;
+      color: #2e86de;
+      background-color: #dff9fb;
+      border: 2px solid #2e86de;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+
+    #captcha-form {
+      width: 100%;
+      max-width: 320px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #captcha-input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    #captcha-submit {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      background-color: #2e86de;
+      color: #fff;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    #captcha-submit:hover {
+      background-color: #1e5fab;
+    }
+
+    #captcha-message {
+      color: #e74c3c;
+      margin-top: 10px;
+      display: none;
+    }
+    
+    /* Redesigned Captcha */
+    .captcha-char {
+      font-size: 40px;
+      margin: 0 5px;
+      color: #fff;
+      background-color: #2e86de;
+      padding: 8px 12px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>보안 코드 챌린지</h1>
+    <p>당신이 인간임을 증명하기 위해 다음 과제를 해결하세요.</p>
+  </header>
+  <div id="captcha-container">
+    <span class="captcha-char">{{ code[0] }}</span>
+    <span class="captcha-char">{{ code[1] }}</span>
+    <span class="captcha-char">{{ code[2] }}</span>
+    <span class="captcha-char">{{ code[3] }}</span>
+  </div>
+  <form id="captcha-form" method="POST" action="{{ url_for('captcha') }}">
+    <input id="captcha-input" type="text" placeholder="위의 코드를 입력하세요." name="code" required>
+    <input type="hidden" name="web" value="{{ request.args.get('web') }}">
+    <button id="captcha-submit" type="submit">제출</button>
+  </form>
+  <p id="captcha-message"></p>
+  <script>
+    // 사용자 입력이 코드와 일치하는지 확인
+    var captchaForm = document.getElementById('captcha-form');
+    var errorMessage = document.getElementById('captcha-message');
+
+    captchaForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+      var captchaInput = document.getElementById('captcha-input');
+
+      if (captchaInput.value == "{{ code }}") {
+        // 양식 제출
+        captchaForm.submit();
+      } else {
+        errorMessage.innerText = '죄송합니다. 입력한 코드가 올바르지 않습니다. 다시 시도해주세요.';
+        errorMessage.style.display = 'block'; // 오류 메시지 표시
+        captchaInput.value = '';
+        refreshCaptcha();
+      }
+    });
+
+    // Captcha Refresh Function
+    function refreshCaptcha() {
+      var captchaChars = document.getElementsByClassName('captcha-char');
+      var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      var code = '';
+      for (var i = 0; i < captchaChars.length; i++) {
+        var char = chars.charAt(Math.floor(Math.random() * chars.length));
+        code += char;
+        captchaChars[i].innerText = char;
+      }
+      return code;
+    }
+
+    // Initial Captcha Load
+    refreshCaptcha();
+  </script>
+</body>
+</html>
